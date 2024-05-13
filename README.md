@@ -16,15 +16,16 @@
 - **password** (TEXT)
 - **gender** (TEXT)
 - **birthday** (DATE)
+- **education_level** (VARCHAR)
+- **university** (VARCHAR)
 - **country** (INTEGER)
 - **type** (BINARY)
 
-### Tabela: `Extra_user_info`
+### Tabela: `message`
 
 - **id** (INTEGER, CHAVE PRIMÁRIA)
 - **user_id** (INTEGER, CHAVE ESTREANGEIRA referenciando `User(id)`)
-- **education_level** (VARCHAR)
-- **university** (VARCHAR)
+- **message_content**
 
 ### Tabela: `Student`
 
@@ -39,13 +40,7 @@
 - **id** (INTEGER, CHAVE PRIMÁRIA)
 - **name** (TEXT)
 - **tutor_id** (INTEGER, CHAVE ESTRANGEIRA referenciando `User(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
-- **student_id** (BINARY, CHAVE ESTRANGEIRA referenciando `Student(id)`)
+- **student_id** (INTEGER, CHAVE ESTRANGEIRA referenciando `Student(id)`)
 
 ### Tabela: `Question`
 
@@ -68,4 +63,93 @@
 - `Question` e `QuestionAnswer` ligam perguntas às respostas dos usuários.
 - `Student` se conecta a `Group`, relacionando jogadores com seus grupos e conecta-se à `question_answer` para mostrar qual estudante forneceu determinada resposta.
 
-&nbsp;&nbsp;&nbsp;&nbsp;As linhas desempenham o papel de conectar as tabelas, relacionando informações e atributos. Por exemplo, a tabela "User" se relaciona com a tabela "Group" através do atributo "group_id", indicando que todos os usuários pertencem a um grupo. Esta estrutura facilita o entendimento e a visualização do processo interno de dados, ajudando na implantação de um banco de dados para um projeto ou servindo como material de consulta para compreender o fluxo de informações.
+```sql
+
+-- Creating User table
+CREATE TABLE Users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR,
+    email VARCHAR,
+    password VARCHAR,
+    gender VARCHAR,
+    birthday DATE,
+    education_level VARCHAR,
+    university VARCHAR,
+    country VARCHAR
+);
+
+-- Creating Student table
+CREATE TABLE Student (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    Country_text TEXT,
+    profile_type VARCHAR,
+    happiness_meter INTEGER
+);
+
+-- Creating Group table
+CREATE TABLE Group (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR,
+    student_id INTEGER,
+    tutor_id INTEGER,
+    FOREIGN KEY (student_id) REFERENCES Users(id),
+    FOREIGN KEY (tutor_id) REFERENCES Users(id)
+);
+
+-- Creating Question table
+CREATE TABLE Question (
+    id SERIAL PRIMARY KEY,
+    question_type VARCHAR,
+    question_text VARCHAR,
+    alternatives VARCHAR
+);
+
+-- Creating Student table
+CREATE TABLE Student (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    country_pov VARCHAR,
+    profile_type VARCHAR,
+    happiness_meter INTEGER,
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+-- Creating QuestionAnswer table
+CREATE TABLE QuestionAnswer (
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER,
+    question_id INTEGER,
+    question_answer VARCHAR,
+    answer_date_time DATETIME,
+    FOREIGN KEY (student_id) REFERENCES Users(id),
+    FOREIGN KEY (question_id) REFERENCES Question(id)
+);
+
+```
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;As linhas desempenham o papel de conectar as tabelas, relacionando informações e atributos. Por exemplo, a tabela "Group" se relaciona com a tabela "Student" através do atributo "student_id", indicando que todos os usuários pertencem a um grupo. Esta estrutura facilita o entendimento do processo interno de dados, ajudando na implantação de um banco de dados para um projeto e servindo como material de consulta.
+
+## Cardinalidade
+
+### Cardinalidade: User e Message
+- **1 para 1**
+
+### Cardinalidade: User e Group
+- **1 para 1**
+
+### Cardinalidade: Group e Student
+- **1 para N**
+
+### Cardinalidade: User e Message
+- **1 para 1**
+
+### Cardinalidade: User e Student
+- **1 para 1**
+
+### Cardinalidade: Student e Question_answer
+- **1 para N**
+
+### Cardinalidade: Question_answer e Question
+- **1 para 1**
